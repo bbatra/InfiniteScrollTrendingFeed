@@ -1,0 +1,12 @@
+{
+  "env": "dev",
+  "host": "localhost",
+  "appPath": "/",
+  "port": "3030",
+  "shortTimeout": 10000,
+  "longTimeout": 10000,
+  "db" : {
+    "name" : "Snackpass",
+    "host" : "mongodb://localhost:27017"
+  }
+}
