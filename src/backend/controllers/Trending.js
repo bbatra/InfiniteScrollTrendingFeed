@@ -8,7 +8,6 @@ const getTrendingItems = async (req, res) => {
     limit = limit ? JSON.parse(limit): undefined;
     page = page ? JSON.parse(page): undefined;
 
-    console.log(`Get trending with limit ${limit} and page ${page}`);
     const result = await OrderItemsService.getTrendingItems(limit, page);
     if(result.error){
       res.send(500)

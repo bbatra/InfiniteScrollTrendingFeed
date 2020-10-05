@@ -14,7 +14,7 @@ body{
     margin: unset
 }
 </style>
-<title> Bharat's timeline app - airtable interview take home assignment (front end) </title>
+<title> Trending items on Snackpass - Bharat's take home assignment </title>
 </head>
 <body>
    <div id="app">${innerHTML}</div>

@@ -2,15 +2,16 @@ import db from '../db'
 const mongoose = require('mongoose');
 import OrderItemsSchema from '../schemas/OrderItems'
 const OrderItems = mongoose.model('orderitems', OrderItemsSchema);
+import { SEARCH_START_DATE_STRING, TRENDING_HOURS_CUTOFF } from "../../frontend/util/constants";
 
-const RESULTS_PER_PAGE = 40;
-const TRENDING_HOURS_CUTOFF = 48;//how many hours back we need to look for trending items
+
 
 const getTrendingItems = async (limit, page) => {
-  // const currDate = new Date();
-  const currDate = new Date('2020-03-09T06:03:00.000Z');//this is the most recent date in our DB items
 
-  const cutoffDate = new Date(currDate);
+  // const currDate = new Date(); //TODO: Use this in production and remove the demo code below
+  const currDate = new Date(SEARCH_START_DATE_STRING);//this is the most recent date in our DB items + 1 minute
+
+  const cutoffDate = new Date(currDate);//Items are tr
   cutoffDate.setHours(cutoffDate.getHours() - TRENDING_HOURS_CUTOFF);
 
   try{
@@ -22,14 +23,36 @@ const getTrendingItems = async (limit, page) => {
         $group: {
           '_id': '$itemName',
           'sum': { $sum: '$quantity'}, //total quantity ordered in period
-          'mostRecent': {$max: '$created'} //most recent order for this item
-          //TODO: create a score that takes both the order time and quantity into account
-          //eg. use formula like (quantity * (TRENDING_HOURS_CUTOFF - hoursSinceOrder)
+          'mostRecent': {$max: '$created'}, //most recent order for this item
         }
       },
       {
-        $sort: { sum: -1, _id: 1}//you have to sort by name as well to break ties and keep paginated queries consistent
-        //TODO: change this to sort by the score once it is implemented
+        $project: {
+          '_id': '$_id',
+          'sum': '$sum',
+          'mostRecent': '$mostRecent',
+          //Creates a score (heuristic) based on both the total quantity & the recency of order
+          //score = Total Quantity / time since last order
+          'score': {
+            $sum: {
+              $divide: [
+                '$sum',
+                {
+                  $subtract: [
+                    currDate,
+                    '$mostRecent'
+                  ]
+                }
+              ]
+            }
+          },
+        }
+      },
+      {
+        $sort: {
+          score: -1,
+          _id: 1 //we have to sort by name as well to break ties and keep paginated queries consistent
+        }
       }
     ]
 
@@ -44,10 +67,10 @@ const getTrendingItems = async (limit, page) => {
         $skip: limit * page
       })
     }
-    console.log(aggregatePipeline);
 
     const results = await db.aggregate(aggregatePipeline, OrderItems);
     const hasMore = !!results[limit]
+
     return {
       hasMore: !!results[limit], // if there is a limit+1th item, another query is still possible
       items: hasMore ? results.slice(0,-1) : results //remove last item if the extra was found
@@ -67,3 +90,4 @@ export default {
   getTrendingItems
 }
 
+getTrendingItems(200,0)

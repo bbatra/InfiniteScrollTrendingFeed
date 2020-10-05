@@ -1,7 +1,7 @@
 import React from 'react';
 import axios from 'axios';
-
-const ITEMS_PER_PAGE = 40;//TODO: abstract better
+import TrendingFeedItem from './TrendingFeedItem';
+import { RESULTS_PER_PAGE } from "../../util/constants";
 
 class TrendingFeedContainer extends React.Component {
 
@@ -19,7 +19,7 @@ class TrendingFeedContainer extends React.Component {
   getTrendingItems = async (page) => {
     this.setState({loading: true});
     try {
-      const result = await axios.get(`/api/trending?page=${page}&limit=${ITEMS_PER_PAGE}`);
+      const result = await axios.get(`/api/trending?page=${page}&limit=${RESULTS_PER_PAGE}`);
 
       if(result.data && result.data.items){
         this.setState({
@@ -51,9 +51,8 @@ class TrendingFeedContainer extends React.Component {
     this.getTrendingItems(this.state.page);
 
     const observerOptions = {
-      root: null,
-      rootMargin: "0px",
-      threshold: 1.0
+      root: null,//i.e. viewport is the root oject to observe
+      threshold: 1.0//invokes callback when 100% of the target is visible within the viewport
     }
 
     this.observer = new IntersectionObserver(this.handleObserver, observerOptions);
@@ -71,10 +70,18 @@ class TrendingFeedContainer extends React.Component {
 
     return (
       <div>
-        {this.state.items.map(item => <div style={{height: '30px'}}key={item._id+item.sum}> {item._id} ordered {item.sum} times </div>)}
+        {
+          this.state.items.map(item => <TrendingFeedItem
+                                          name={item._id}
+                                          sum={item.sum}
+                                          mostRecent={item.mostRecent}
+                                          key={item._id + item.mostRecent}
+                                        />)
+        }
         <div
-          ref={loadingRef => (this.loadingRef = loadingRef)}
-          style={loadingCSS}>
+          ref={ (loadingRef) => this.loadingRef = loadingRef}
+          style={loadingCSS}
+        >
           <span style={loadingTextCSS}>Loading...</span>
         </div>
       </div>

@@ -4,5 +4,9 @@
   "appPath": "/",
   "port": "8080",
   "shortTimeout": 10000,
-  "longTimeout": 10000
+  "longTimeout": 10000,
+  "db" : {
+    "name" : "Snackpass",
+    "host" : "mongodb://13.57.225.153:27017"
+  }
 }

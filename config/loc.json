@@ -7,6 +7,6 @@
   "longTimeout": 10000,
   "db" : {
     "name" : "Snackpass",
-    "host" : "mongodb://localhost:27017"
+    "host" : "mongodb://13.57.225.153:27017"
   }
 }
