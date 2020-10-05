@@ -1,8 +1,7 @@
 {
-  "env": "dev",
+  "env": "loc",
   "host": "localhost",
   "appPath": "/",
-  "port": "3030",
   "shortTimeout": 10000,
   "longTimeout": 10000,
   "db" : {
