@@ -21,7 +21,9 @@ https://www.kaggle.com/henslersoftware/19560-indian-takeaway-orders.
     I cleaned this dataset, changing dates to all be within a 48 hour period and adding
 a few extra items to create enough diversity for the need of infinite scrolling.
 
-    I then imported this data into a mongoDB instance in one of my EC2 servers
+    I then imported this data into a mongoDB instance in one of my EC2 servers.
+
+    (The DB dump is present in this directory as dbDump.zip, should you need it)
 
 2. I then created a new full stack app using [my own boilerplate setup](https://github.com/bbatra/ServerSideNodeReact):
 3. I created the schema for OrderItems and built a backend service that would return the data required (services > OrderItems.js).
