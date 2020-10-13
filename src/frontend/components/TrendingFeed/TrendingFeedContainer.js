@@ -10,9 +10,9 @@ class TrendingFeedContainer extends React.Component {
     this.state = {
       items: [],
       loading: false,
-      page: 0,
-      prevY: 0,
-      hasMoreItems: true,
+      page: 0,//page number from Db results
+      prevY: 0,//tracks position of bottom most row in view
+      hasMoreItems: true,//whether the DB has more data we can query for
     }
   }
 
@@ -39,8 +39,10 @@ class TrendingFeedContainer extends React.Component {
     }
   }
 
-  handleObserver = (entities, observer) => {
+  handleObserver = (entities) => {
     const y = entities[0].boundingClientRect.y;
+
+    //make sure to only call server when scrolling down, and not while scrolling up
     if (this.state.prevY > y && this.state.hasMoreItems) {
       this.getTrendingItems(this.state.page);
     }
@@ -51,9 +53,9 @@ class TrendingFeedContainer extends React.Component {
     this.getTrendingItems(this.state.page);
 
     const observerOptions = {
-      root: null,//i.e. viewport is the root oject to observe
+      root: null,//i.e. viewport is the root object to observe
       threshold: 1.0//invokes callback when 100% of the target is visible within the viewport
-    }
+    };
 
     this.observer = new IntersectionObserver(this.handleObserver, observerOptions);
     this.observer.observe(this.loadingRef);
@@ -79,7 +81,7 @@ class TrendingFeedContainer extends React.Component {
                                         />)
         }
         <div
-          ref={ (loadingRef) => this.loadingRef = loadingRef}
+          ref={ (loadingRef) => this.loadingRef = loadingRef }
           style={loadingCSS}
         >
           <span style={loadingTextCSS}>Loading...</span>
