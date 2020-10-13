@@ -46,3 +46,21 @@ a few extra items to create enough diversity for the need of infinite scrolling.
 4. Finally, I made a very basic React front end, which rendered the list of order items in an infinite scroll manner.
 
    For this task, I used the [Intersection Observer API](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API)
+
+   # Project structure
+
+   #### Backend
+   - Lives inside src/backend
+   - server file is server.js
+   - server.js invokes a series of steps from src/pipeline, to setup middleware, routing, error handling
+   - viewController serves views which are rendered on the server side
+   - view templates are available in src/backend/views
+   - In the local environment, the process runs through nodemon and reloads whenever a change is made to the code
+
+   #### Frontend
+   - Lives inside src/frontend
+   - React based
+   - client.js is used to inject the react bundle into the HTML template. This is configured through webpack
+   - bundles live in src/static/scripts
+   - The root component is src/components/index.js, and all other components live in their own directories under src/components
+   - In the local environment, hot reloading is enabled. NOTE: if you edit backend files, everything reloads including the frontend

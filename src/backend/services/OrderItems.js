@@ -39,7 +39,7 @@ const getTrendingItems = async (limit, page) => {
                 '$sum',
                 {
                   $subtract: [
-                    currDate,
+                    currDate,//gets time elapsed between start time and most recently ordered time
                     '$mostRecent'
                   ]
                 }
@@ -72,7 +72,7 @@ const getTrendingItems = async (limit, page) => {
     const hasMore = !!results[limit]
 
     return {
-      hasMore: !!results[limit], // if there is a limit+1th item, another query is still possible
+      hasMore: !!results[limit], // if there is a (limit+1)th item, another query is still possible
       items: hasMore ? results.slice(0,-1) : results //remove last item if the extra was found
     }
   }
@@ -89,5 +89,3 @@ const getTrendingItems = async (limit, page) => {
 export default {
   getTrendingItems
 }
-
-getTrendingItems(200,0)
